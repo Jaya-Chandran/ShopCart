@@ -1,0 +1,173 @@
+{% extends 'shop/base.html' %}
+{% block title %}ShopCart — Discover Great Products{% endblock %}
+{% block extra_css %}
+<style>
+  .hero {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 4rem 3rem;
+    margin: -2rem -2rem 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    border-bottom: 4px solid var(--terracotta);
+  }
+  .hero-text h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .hero-text h1 em { color: var(--terracotta); font-style: italic; }
+  .hero-text p { color: #aaa; margin: 1rem 0 2rem; font-size: 1.1rem; }
+  .hero-visual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .hero-visual .hbox {
+    background: #1a1917;
+    border: 1px solid #333;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+  }
+  .hero-visual .hbox:first-child { background: var(--terracotta); grid-column: span 2; aspect-ratio: 2/1; }
+
+  .categories-bar {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+  .cat-chip {
+    padding: 0.4rem 1rem;
+    border: 1.5px solid var(--sand);
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.15s;
+    border-radius: 100px;
+  }
+  .cat-chip:hover, .cat-chip.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .section-header h2 { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 900; }
+  .section-header span { color: var(--muted); font-size: 0.9rem; }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+  .product-card {
+    background: white;
+    border: 1px solid var(--sand);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.1); }
+  .product-card-img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    display: block;
+    background: var(--sand);
+  }
+  .product-card-body { padding: 1.1rem; }
+  .product-card-category { font-size: 0.75rem; color: var(--terracotta); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+  .product-card-name { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; margin: 0.3rem 0; }
+  .product-card-name a { color: var(--ink); text-decoration: none; }
+  .product-card-name a:hover { color: var(--terracotta); }
+  .product-card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
+  .price { font-size: 1.2rem; font-weight: 700; color: var(--ink); }
+  .stock-badge { font-size: 0.75rem; color: var(--sage); font-weight: 500; }
+  .stock-badge.low { color: var(--gold); }
+  .stock-badge.out { color: #c84040; }
+  .add-btn { background: var(--ink); color: var(--cream); border: none; padding: 0.5rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; width: 100%; margin-top: 0.75rem; transition: background 0.15s; }
+  .add-btn:hover { background: var(--terracotta); }
+  .add-btn:disabled { background: var(--sand); color: var(--muted); cursor: not-allowed; }
+
+  .empty-state {
+    text-align: center;
+    padding: 5rem 2rem;
+    color: var(--muted);
+  }
+  .empty-state h3 { font-family: 'Fraunces', serif; font-size: 1.5rem; margin-bottom: 0.5rem; }
+</style>
+{% endblock %}
+{% block content %}
+{% if not query and not selected_category %}
+<section class="hero">
+  <div class="hero-text">
+    <h1>Discover <em>Beautiful</em> Things Online</h1>
+    <p>Curated products, effortless shopping, delivered to your door.</p>
+    <a href="#products" class="btn btn-primary">Shop Now →</a>
+  </div>
+  <div class="hero-visual">
+    <div class="hbox">🛍️</div>
+    <div class="hbox">👗</div>
+    <div class="hbox">📱</div>
+  </div>
+</section>
+{% endif %}
+
+<div class="categories-bar">
+  <a href="/" class="cat-chip {% if not selected_category %}active{% endif %}">All Products</a>
+  {% for cat in categories %}
+  <a href="/?category={{ cat.slug }}" class="cat-chip {% if selected_category == cat.slug %}active{% endif %}">{{ cat.name }}</a>
+  {% endfor %}
+</div>
+
+<div id="products">
+  <div class="section-header">
+    <h2>{% if query %}Results for "{{ query }}"{% elif selected_category %}{{ selected_category|title }}{% else %}All Products{% endif %}</h2>
+    <span>{{ products.count }} item{{ products.count|pluralize }}</span>
+  </div>
+
+  {% if products %}
+  <div class="products-grid">
+    {% for product in products %}
+    <div class="product-card">
+      <a href="/product/{{ product.slug }}/">
+        <img class="product-card-img" src="{{ product.image_url }}" alt="{{ product.name }}" loading="lazy">
+      </a>
+      <div class="product-card-body">
+        <div class="product-card-category">{{ product.category.name }}</div>
+        <div class="product-card-name"><a href="/product/{{ product.slug }}/">{{ product.name }}</a></div>
+        <div class="product-card-footer">
+          <span class="price">${{ product.price }}</span>
+          <span class="stock-badge {% if product.stock == 0 %}out{% elif product.stock < 5 %}low{% endif %}">
+            {% if product.stock == 0 %}Out of stock{% elif product.stock < 5 %}Only {{ product.stock }} left{% else %}In stock{% endif %}
+          </span>
+        </div>
+        <form method="post" action="/cart/add/{{ product.id }}/">
+          {% csrf_token %}
+          <button class="add-btn" {% if product.stock == 0 %}disabled{% endif %}>
+            {% if product.stock == 0 %}Out of Stock{% else %}Add to Cart{% endif %}
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div style="font-size:3rem;margin-bottom:1rem">🔍</div>
+    <h3>No products found</h3>
+    <p>Try a different search term or browse all categories.</p>
+    <a href="/" class="btn btn-outline" style="margin-top:1.5rem">View All Products</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

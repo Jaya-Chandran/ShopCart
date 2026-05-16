@@ -1,0 +1,74 @@
+{% extends 'shop/base.html' %}
+{% block title %}{{ product.name }} — ShopCart{% endblock %}
+{% block extra_css %}
+<style>
+  .product-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-bottom: 4rem; }
+  .product-img { width: 100%; aspect-ratio: 1; object-fit: cover; border: 1px solid var(--sand); }
+  .product-info { padding-top: 1rem; }
+  .product-cat { color: var(--terracotta); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+  .product-name { font-family: 'Fraunces', serif; font-size: 2.5rem; font-weight: 900; line-height: 1.1; margin: 0.5rem 0; }
+  .product-price { font-size: 2rem; font-weight: 700; margin: 1.5rem 0; }
+  .product-desc { color: var(--muted); line-height: 1.7; margin-bottom: 2rem; }
+  .qty-row { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; }
+  .qty-input { width: 80px; padding: 0.6rem; border: 1.5px solid var(--sand); text-align: center; font-size: 1rem; font-family: 'DM Sans', sans-serif; }
+  .divider { border: none; border-top: 1px solid var(--sand); margin: 2rem 0; }
+  .related-section h2 { font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 900; margin-bottom: 1.5rem; }
+  .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+  .related-card { border: 1px solid var(--sand); background: white; overflow: hidden; }
+  .related-card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .related-card-body { padding: 0.8rem; }
+  .related-card-body a { text-decoration: none; color: var(--ink); font-weight: 600; font-size: 0.9rem; }
+  .related-card-body .price { color: var(--terracotta); font-weight: 700; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="product-detail">
+  <div>
+    <img class="product-img" src="{{ product.image_url }}" alt="{{ product.name }}">
+  </div>
+  <div class="product-info">
+    <div class="product-cat">{{ product.category.name }}</div>
+    <h1 class="product-name">{{ product.name }}</h1>
+    <div class="product-price">${{ product.price }}</div>
+    <p class="product-desc">{{ product.description|default:"A quality product from our curated collection." }}</p>
+
+    {% if product.stock > 0 %}
+    <form method="post" action="/cart/add/{{ product.id }}/">
+      {% csrf_token %}
+      <div class="qty-row">
+        <span style="font-weight:600;font-size:0.85rem;color:var(--muted)">QUANTITY</span>
+      </div>
+      <button class="btn btn-primary" style="width:100%;padding:1rem;font-size:1rem;">
+        🛒 Add to Cart
+      </button>
+    </form>
+    {% else %}
+    <div style="background:var(--sand);padding:1rem;text-align:center;color:var(--muted);font-weight:600;">Out of Stock</div>
+    {% endif %}
+
+    <hr class="divider">
+    <div style="display:flex;gap:2rem;font-size:0.85rem;color:var(--muted);">
+      <div>📦 <strong>{{ product.stock }}</strong> in stock</div>
+      <div>✅ Authentic product</div>
+      <div>🔄 Easy returns</div>
+    </div>
+  </div>
+</div>
+
+{% if related %}
+<div class="related-section">
+  <h2>You Might Also Like</h2>
+  <div class="related-grid">
+    {% for r in related %}
+    <div class="related-card">
+      <img src="{{ r.image_url }}" alt="{{ r.name }}">
+      <div class="related-card-body">
+        <a href="/product/{{ r.slug }}/">{{ r.name }}</a>
+        <div class="price">${{ r.price }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}

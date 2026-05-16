@@ -1,0 +1,35 @@
+{% extends 'shop/base.html' %}
+{% block title %}Login — ShopCart{% endblock %}
+{% block extra_css %}
+<style>
+  .auth-wrap { max-width: 440px; margin: 3rem auto; }
+  .auth-card { background: white; border: 1px solid var(--sand); padding: 2.5rem; }
+  .auth-card h1 { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 900; margin-bottom: 0.25rem; }
+  .auth-card p { color: var(--muted); margin-bottom: 2rem; }
+  .auth-footer { text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--muted); }
+  .auth-footer a { color: var(--terracotta); text-decoration: none; font-weight: 600; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <h1>Welcome back</h1>
+    <p>Sign in to your ShopCart account</p>
+    <form method="post">
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="form-group">
+        <label>{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      {% endfor %}
+      {% if form.non_field_errors %}
+      <div style="color:#c84040;font-size:0.9rem;margin-bottom:1rem;">{{ form.non_field_errors }}</div>
+      {% endif %}
+      <button type="submit" class="btn btn-primary" style="width:100%;padding:0.9rem;font-size:1rem;">Sign In →</button>
+    </form>
+    <div class="auth-footer">Don't have an account? <a href="/register/">Create one</a></div>
+  </div>
+</div>
+{% endblock %}

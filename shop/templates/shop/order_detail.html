@@ -1,0 +1,54 @@
+{% extends 'shop/base.html' %}
+{% block title %}Order #{{ order.id }} — ShopCart{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Order #{{ order.id }}</h1>
+  <p>Placed on {{ order.created|date:"F d, Y \a\t g:i A" }}</p>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 340px;gap:2rem;">
+  <div>
+    <table style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr style="border-bottom:2px solid var(--sand);">
+          <th style="text-align:left;padding:0.75rem;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted)">Product</th>
+          <th style="text-align:right;padding:0.75rem;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted)">Qty</th>
+          <th style="text-align:right;padding:0.75rem;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted)">Price</th>
+          <th style="text-align:right;padding:0.75rem;font-size:0.8rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted)">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in order.items.all %}
+        <tr style="border-bottom:1px solid var(--sand);">
+          <td style="padding:1rem 0.75rem;font-weight:600;">{{ item.product.name }}</td>
+          <td style="padding:1rem 0.75rem;text-align:right;color:var(--muted)">× {{ item.quantity }}</td>
+          <td style="padding:1rem 0.75rem;text-align:right;">${{ item.price }}</td>
+          <td style="padding:1rem 0.75rem;text-align:right;font-weight:700;">${{ item.get_total }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" style="padding:1rem 0.75rem;text-align:right;font-weight:700;font-size:1.1rem;">Total</td>
+          <td style="padding:1rem 0.75rem;text-align:right;font-weight:900;font-size:1.2rem;color:var(--terracotta)">${{ order.total_price }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div>
+    <div style="background:white;border:1px solid var(--sand);padding:1.5rem;">
+      <h3 style="font-family:'Fraunces',serif;font-size:1.1rem;font-weight:900;margin-bottom:1rem;">Order Details</h3>
+      <div style="font-size:0.9rem;display:flex;flex-direction:column;gap:0.75rem;">
+        <div><strong>Status:</strong>
+          <span style="margin-left:0.5rem;padding:0.2rem 0.6rem;background:var(--sand);font-size:0.8rem;font-weight:600">{{ order.get_status_display }}</span>
+        </div>
+        <div><strong>Shipping Address:</strong><br>
+          <span style="color:var(--muted)">{{ order.shipping_address|default:"Not provided" }}</span>
+        </div>
+      </div>
+    </div>
+    <a href="/orders/" class="btn btn-outline" style="margin-top:1rem;display:block;text-align:center;">← Back to Orders</a>
+  </div>
+</div>
+{% endblock %}

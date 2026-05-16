@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}ShopCart{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,600;0,900;1,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0f0e0d;
+      --cream: #faf7f2;
+      --sand: #e8e0d4;
+      --terracotta: #c8562a;
+      --terracotta-dark: #a8401a;
+      --sage: #5c7a5c;
+      --gold: #d4a847;
+      --muted: #7a7067;
+      --radius: 2px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 3px solid var(--terracotta);
+    }
+    .nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      height: 64px;
+    }
+    .nav-brand {
+      font-family: 'Fraunces', serif;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--cream);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .nav-brand span { color: var(--terracotta); }
+    .nav-search {
+      flex: 1;
+      max-width: 480px;
+      display: flex;
+      gap: 0;
+    }
+    .nav-search input {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      border: 1.5px solid #333;
+      border-right: none;
+      background: #1a1917;
+      color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .nav-search input::placeholder { color: var(--muted); }
+    .nav-search button {
+      padding: 0.5rem 1rem;
+      background: var(--terracotta);
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .nav-links {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .nav-links a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--cream); }
+    .cart-link {
+      background: var(--terracotta);
+      color: white !important;
+      padding: 0.4rem 1rem;
+      font-weight: 600 !important;
+      position: relative;
+    }
+    .cart-badge {
+      background: var(--gold);
+      color: var(--ink);
+      border-radius: 50%;
+      width: 18px; height: 18px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 6px;
+    }
+
+    /* MESSAGES */
+    .messages-wrap { max-width: 1400px; margin: 1rem auto; padding: 0 2rem; }
+    .msg {
+      padding: 0.75rem 1.25rem;
+      margin-bottom: 0.5rem;
+      border-left: 4px solid var(--terracotta);
+      background: #fff8f5;
+      font-size: 0.9rem;
+    }
+    .msg.success { border-color: var(--sage); background: #f5fff5; }
+    .msg.warning { border-color: var(--gold); background: #fffdf0; }
+    .msg.error { border-color: #c84040; background: #fff5f5; }
+
+    /* MAIN */
+    main { flex: 1; max-width: 1400px; width: 100%; margin: 0 auto; padding: 2rem; }
+
+    /* FOOTER */
+    footer {
+      background: var(--ink);
+      color: var(--muted);
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+      margin-top: auto;
+    }
+    footer strong { color: var(--terracotta); }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-block;
+      padding: 0.65rem 1.5rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: all 0.15s;
+      border-radius: var(--radius);
+    }
+    .btn-primary { background: var(--terracotta); color: white; }
+    .btn-primary:hover { background: var(--terracotta-dark); }
+    .btn-outline { background: transparent; color: var(--ink); border: 2px solid var(--ink); }
+    .btn-outline:hover { background: var(--ink); color: var(--cream); }
+    .btn-sm { padding: 0.4rem 0.9rem; font-size: 0.8rem; }
+    .btn-danger { background: #c84040; color: white; }
+    .btn-danger:hover { background: #a03030; }
+    .btn-sage { background: var(--sage); color: white; }
+
+    /* FORMS */
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border: 1.5px solid var(--sand);
+      background: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+      border-radius: var(--radius);
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--terracotta);
+    }
+    .form-group .errorlist { list-style: none; color: #c84040; font-size: 0.82rem; margin-top: 0.3rem; }
+
+    /* PAGE HEADER */
+    .page-header {
+      border-bottom: 2px solid var(--sand);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .page-header h1 { font-family: 'Fraunces', serif; font-size: 2.5rem; font-weight: 900; }
+    .page-header p { color: var(--muted); margin-top: 0.3rem; }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">Shop<span>Cart</span></a>
+      <form class="nav-search" method="get" action="/">
+        <input type="text" name="q" placeholder="Search products…" value="{{ request.GET.q }}">
+        <button type="submit">🔍</button>
+      </form>
+      <div class="nav-links">
+        {% if user.is_authenticated %}
+          <a href="/orders/">My Orders</a>
+          {% if user.is_staff %}<a href="/admin/">Admin</a>{% endif %}
+          <a href="/logout/">Logout</a>
+        {% else %}
+          <a href="/login/">Login</a>
+          <a href="/register/">Register</a>
+        {% endif %}
+        <a href="/cart/" class="cart-link">
+          🛒 Cart
+          {% if cart_count %}<span class="cart-badge">{{ cart_count }}</span>{% endif %}
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  {% if messages %}
+  <div class="messages-wrap">
+    {% for message in messages %}
+    <div class="msg {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <main>{% block content %}{% endblock %}</main>
+
+  <footer>
+    &copy; 2024 <strong>ShopCart</strong> — Built with Django &amp; ❤️
+  </footer>
+</body>
+</html>
