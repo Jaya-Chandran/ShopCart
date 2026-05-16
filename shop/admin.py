@@ -14,6 +14,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_filter = ['available', 'category']
     list_editable = ['price', 'stock', 'available']
     prepopulated_fields = {'slug': ('name',)}
+    exclude = ['image']
 
 
 class OrderItemInline(admin.TabularInline):
