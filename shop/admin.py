@@ -12,9 +12,17 @@ class CategoryAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'category', 'price', 'stock', 'available']
     list_filter = ['available', 'category']
-    list_editable = ['price', 'stock', 'available']
     prepopulated_fields = {'slug': ('name',)}
-    exclude = ['image']
+    fields = [
+        'category',
+        'name', 
+        'slug',
+        'description',
+        'price',
+        'stock',
+        'available',
+        'image',
+    ]
 
 
 class OrderItemInline(admin.TabularInline):
