@@ -1,6 +1,9 @@
 import os
 from pathlib import Path
 import dj_database_url
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,8 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cloudinary',
     'cloudinary_storage',
+    'cloudinary',
     'shop',
 ]
 
@@ -104,11 +107,20 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 
+# Cloudinary
+
+
+cloudinary.config(
+    cloud_name = 'diwdhvsw3',
+    api_key = '418647135481774',
+    api_secret = 'qwjnn7mEsZz4hihWTZ91lfib5WE',
+    secure = True
+)
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+    'CLOUD_NAME': 'diwdhvsw3',
+    'API_KEY': '418647135481774',
+    'API_SECRET': 'qwjnn7mEsZz4hihWTZ91lfib5WE',
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
