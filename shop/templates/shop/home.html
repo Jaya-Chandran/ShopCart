@@ -1,4 +1,5 @@
 {% extends 'shop/base.html' %}
+{% load static %}
 {% block title %}ShopCart — Discover Great Products{% endblock %}
 {% block extra_css %}
 <style>
@@ -12,7 +13,7 @@
     gap: 3rem;
     align-items: center;
     border-bottom: 4px solid var(--terracotta);
-  }
+  } 
   .hero-text h1 {
     font-family: 'Fraunces', serif;
     font-size: 3.5rem;
@@ -21,14 +22,14 @@
     letter-spacing: -0.02em;
   }
   .hero-text h1 em { color: var(--terracotta); font-style: italic; }
-  .hero-text p { color: #aaa; margin: 1rem 0 2rem; font-size: 1.1rem; }
+  .hero-text p { color: #3e95f2; margin: 2.5rem 0 2rem; font-size: 1.1rem; }
   .hero-visual {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
   }
   .hero-visual .hbox {
-    background: #1a1917;
+    background: #0b0b0b;
     border: 1px solid #333;
     aspect-ratio: 1;
     display: flex;
@@ -109,16 +110,43 @@
 {% block content %}
 {% if not query and not selected_category %}
 <section class="hero">
-  <div class="hero-text">
-    <h1>Discover <em>Beautiful</em> Things Online</h1>
-    <p>Curated products, effortless shopping, delivered to your door.</p>
-    <a href="#products" class="btn btn-primary">Shop Now →</a>
+<div id="carouselExampleIndicators" class="carousel slide my-5" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
   </div>
-  <div class="hero-visual">
-    <div class="hbox">🛍️</div>
-    <div class="hbox">👗</div>
-    <div class="hbox">📱</div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{% static '/shop/images/slim-lady.jpg' %}" class="d-block w-100" alt="Slide 1"> 
+    </div>
+    <div class="carousel-item">
+      <img src="{% static '/shop/images/shopping-lady.jpg' %}" class="d-block w-100" alt="Slide 2">
+    </div>
+    <div class="carousel-item">
+      <img src="{% static '/shop/images/img-3.jpg' %}" class="d-block w-100" alt="Slide 3">
+    </div>
+    <div class="carousel-item">
+      <img src="{% static '/shop/images/img-4.jpg' %}" class="d-block w-100" alt="Slide 4">
+    </div>
   </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+  <section  class="hero-text">
+    <h1 class="">Discover Beautiful Things Online <h1>
+      <p class="">Curated products, effortless shopping, delivered to your door.</p>
+    </section>
+ 
+  
 </section>
 {% endif %}
 
